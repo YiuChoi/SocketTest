@@ -1,49 +1,60 @@
 package name.caiyao.server.Mina;
 
-import org.apache.mina.core.service.IoHandlerAdapter;
-import org.apache.mina.core.session.IdleStatus;
-import org.apache.mina.core.session.IoSession;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 
 /**
  * Created by caiya on 2016/6/30 0030.
  */
-public class MinaServerHandler extends IoHandlerAdapter {
-
+public class MinaServerHandler extends ChannelInboundHandlerAdapter {
     @Override
-    public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         System.out.println("exceptionCaught");
+        // 当出现异常就关闭连接
+        cause.printStackTrace();
+        ctx.close();
     }
 
     @Override
-    public void messageReceived(IoSession session, Object message) throws Exception {
-        System.out.println("messageReceived");
-        System.out.println((String) message);
-        session.write("server reply:"+ message);
+    public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("channelRegistered");
     }
 
     @Override
-    public void messageSent(IoSession session, Object message) throws Exception {
-        System.out.println("messageSent");
-
+    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("channelUnregistered");
     }
 
     @Override
-    public void sessionClosed(IoSession session) throws Exception {
-        System.out.println("sessionClosed");
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("channelActive");
     }
 
     @Override
-    public void sessionOpened(IoSession session) throws Exception {
-        System.out.println("sessionOpened");
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("channelInactive");
     }
 
     @Override
-    public void sessionCreated(IoSession session) throws Exception {
-        System.out.println("sessionCreated");
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        System.out.println(ctx.channel().remoteAddress()+"->Server :"+ msg.toString());
+        ctx.write(msg); // (1)
+        ctx.write("\n"); // (1)
+        ctx.flush(); // (2)
     }
 
     @Override
-    public void sessionIdle(IoSession session, IdleStatus status) throws Exception {
-        System.out.println("sessionIdle");
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("channelReadComplete");
+    }
+
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        System.out.println("userEventTriggered");
+    }
+
+    @Override
+    public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("channelWritabilityChanged");
     }
 }

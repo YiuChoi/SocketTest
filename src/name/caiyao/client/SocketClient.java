@@ -18,14 +18,15 @@ public class SocketClient {
         BufferedWriter outWriter = null;
         Socket socket = null;
         try {
-            socket = new Socket("127.0.0.1", 9898);
+            socket = new Socket("127.0.0.1", 8080);
             outWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             inputReader = new BufferedReader(new InputStreamReader(System.in));
             bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             startServerReplyLisenter(bufferedReader);
             String inputContent;
             while (!(inputContent = inputReader.readLine()).equals("bye")) {
-                outWriter.write(inputContent + "\n");
+                outWriter.write(inputContent);
+                outWriter.write("\n");
                 outWriter.flush();
             }
         } catch (IOException e) {
