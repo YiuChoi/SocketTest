@@ -1,4 +1,4 @@
-package name.caiyao.server.Mina;
+package name.caiyao.server;
 
 /**
  * Created by 蔡小木 on 2016/7/18 0018.
